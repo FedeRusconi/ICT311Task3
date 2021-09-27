@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listUIFragment">
+
+    <fragment
+        android:id="@+id/listUIFragment"
+        android:name="com.ict311.task3.ListUIFragment"
+        android:label="list_ui_fragment"
+        tools:layout="@layout/list_ui_fragment" />
+</navigation>
