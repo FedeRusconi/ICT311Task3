@@ -1,9 +1,8 @@
 package com.ict311.task3
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,9 +23,12 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         binding = ListUiFragmentBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(ListUIViewModel::class.java)
 
+        //Add a divider between list items
         with(binding.recyclerView) {
             setHasFixedSize(true)
             val divider = DividerItemDecoration(
@@ -44,9 +46,19 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onItemCLicked(activityId: UUID) {
         val action = ListUIFragmentDirections.actionItemUi(activityId)
         findNavController().navigate(action)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.list_ui_fragment, menu)
     }
 
     /* MIGHT USE THIS FOR CLARITY
