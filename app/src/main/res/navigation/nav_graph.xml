@@ -9,5 +9,18 @@
         android:id="@+id/listUIFragment"
         android:name="com.ict311.task3.ListUIFragment"
         android:label="list_ui_fragment"
-        tools:layout="@layout/list_ui_fragment" />
+        tools:layout="@layout/list_ui_fragment" >
+        <action
+            android:id="@+id/action_item_ui"
+            app:destination="@id/itemUIFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemUIFragment"
+        android:name="com.ict311.task3.ItemUIFragment"
+        android:label="item_ui_fragment"
+        tools:layout="@layout/item_ui_fragment" >
+        <argument
+            android:name="activityId"
+            app:argType="java.util.UUID" />
+    </fragment>
 </navigation>
