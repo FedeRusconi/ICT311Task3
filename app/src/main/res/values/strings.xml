@@ -4,4 +4,6 @@
     <string name="enter_activity_place">Enter Activity Place</string>
     <string name="new_activity">New Activity</string>
     <string name="delete_activity">Delete Activity</string>
+    <string name="delete_activities">Delete Activities</string>
+    <string name="error_title_empty">Title cannot be empty</string>
 </resources>

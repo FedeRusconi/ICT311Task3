@@ -13,6 +13,8 @@ class ListUIAdapter(private val activitiesList: List<ActivityEntity>,
                     private val callbacks: Callbacks):
     RecyclerView.Adapter<ListUIAdapter.ViewHolder>(){
 
+    val selectedActivities = arrayListOf<ActivityEntity>()
+
     inner class ViewHolder(itemView: View):
         RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
@@ -28,11 +30,26 @@ class ListUIAdapter(private val activitiesList: List<ActivityEntity>,
             binding.activityTitle.text = activity.title
             binding.activityDate.text = DateFormat.format( "EEEE, MMM d, yyyy", activity.date)
             binding.activityPlace.text = activity.place
-            /*solvedImageView.visibility = if (crime.isSolved) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }*/
+            //Select/De-select activity
+            binding.floatingActionButton.setOnClickListener{
+                if(selectedActivities.contains(activity)){
+                    selectedActivities.remove(activity)
+                    binding.floatingActionButton.setImageResource(R.drawable.ic_fitness)
+                } else {
+                    selectedActivities.add(activity)
+                    binding.floatingActionButton.setImageResource(R.drawable.ic_check)
+                }
+                //Notify fragment to change menu bar
+                callbacks.onItemSelectionChanged()
+            }
+            //Set selected activities on scrolling
+            binding.floatingActionButton.setImageResource(
+                if(selectedActivities.contains(activity)){
+                    R.drawable.ic_check
+                } else {
+                    R.drawable.ic_fitness
+                }
+            )
         }
 
         override fun onClick(v: View?) {
@@ -64,5 +81,6 @@ class ListUIAdapter(private val activitiesList: List<ActivityEntity>,
 
     interface Callbacks {
         fun onItemCLicked(activityId: UUID)
+        fun onItemSelectionChanged()
     }
 }

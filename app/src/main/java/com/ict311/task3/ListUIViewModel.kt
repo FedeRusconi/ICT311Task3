@@ -7,10 +7,16 @@ import com.ict311.task3.data.SampleDataProvider
 
 class ListUIViewModel : ViewModel() {
 
-    val activitiesList = MutableLiveData<List<ActivityEntity>>()
+    private val dbRepository = DbRepository.get()
 
-    init {
-        activitiesList.value = SampleDataProvider.getActivities()
+    val activitiesList = dbRepository.getAllActivities()
+
+    fun addActivity(activity: ActivityEntity) {
+        dbRepository.insertActivity(activity)
+    }
+
+    fun deleteActivities(selectedActivities: List<ActivityEntity>) {
+        dbRepository.deleteActivities(selectedActivities)
     }
 
 }

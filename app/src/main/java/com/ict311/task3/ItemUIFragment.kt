@@ -1,10 +1,14 @@
 package com.ict311.task3
 
+import android.app.Activity
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ict311.task3.databinding.ItemUiFragmentBinding
@@ -27,15 +31,19 @@ class ItemUIFragment : Fragment() {
             it.setHomeAsUpIndicator(R.drawable.ic_check)
         }
 
-        binding = ItemUiFragmentBinding.inflate(inflater, container, false)
-        binding.activityTitle.setText(args.activityId.toString())
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ItemUIViewModel::class.java)
 
+        binding = ItemUiFragmentBinding.inflate(inflater, container, false)
+        binding.activityTitle.setText("")
+
+        //Observe selected activity and populate form
+        viewModel.currentActivity.observe(viewLifecycleOwner, Observer {
+            binding.activityTitle.setText(it.title)
+        })
+        //Get selected activity
+        viewModel.getActivityById(args.activityId)
+
+        return binding.root
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -57,8 +65,22 @@ class ItemUIFragment : Fragment() {
     }
 
     private fun saveActivity(): Boolean {
-        findNavController().navigateUp()
-
+        //Hide soft keyboard
+        val imm = requireActivity()
+            .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+        //Save or update activity
+        viewModel.currentActivity.value?.title = binding.activityTitle.text.toString()
+        if(viewModel.saveUpdateActivity()) {
+            //Back to previous view
+            findNavController().navigateUp()
+        } else {
+            Toast.makeText(
+                context,
+                R.string.error_title_empty,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         return true
     }
 

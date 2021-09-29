@@ -17,13 +17,21 @@ class SampleDataProvider {
             return Date(Date().time + diff)
         }
 
+        fun getSingleActivity(index: Int): ActivityEntity = getActivities()[index]
+
         fun getActivities() = arrayListOf(
-            ActivityEntity(UUID.randomUUID(), sampleText1, getDate(0), "place 1",
-            1, 5, true),
-            ActivityEntity(UUID.randomUUID(), sampleText2, getDate(1), "place 2",
-            2, 5, true),
-            ActivityEntity(UUID.randomUUID(), sampleText3, getDate(2), "place 3",
-            3, 5, true)
+            ActivityEntity(
+                UUID.randomUUID(), sampleText1, getDate(0), "place 1",
+                1, 5, true
+            ),
+            ActivityEntity(
+                UUID.randomUUID(), sampleText2, getDate(1), "place 2",
+                2, 5, true
+            ),
+            ActivityEntity(
+                UUID.randomUUID(), sampleText3, getDate(2), "place 3",
+                3, 5, true
+            )
         )
     }
 }

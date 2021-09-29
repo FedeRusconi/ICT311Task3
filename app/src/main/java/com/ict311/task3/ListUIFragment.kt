@@ -1,6 +1,8 @@
 package com.ict311.task3
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -37,7 +39,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
             addItemDecoration(divider)
         }
 
-        viewModel.activitiesList.observe(viewLifecycleOwner, Observer {
+        viewModel.activitiesList?.observe(viewLifecycleOwner, Observer {
             adapter = ListUIAdapter(it, this@ListUIFragment)
             binding.recyclerView.adapter = adapter
             binding.recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -56,9 +58,45 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         findNavController().navigate(action)
     }
 
+    override fun onItemSelectionChanged() {
+        //Reset options menu to toggle between two menus
+        requireActivity().invalidateOptionsMenu()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val menuId =
+            if (this::adapter.isInitialized && adapter.selectedActivities.isNotEmpty()) {
+                R.menu.list_ui_fragment_selected_items
+            } else {
+                R.menu.list_ui_fragment
+            }
+        inflater.inflate(menuId, menu)
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.list_ui_fragment, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.newActivity -> addNewActivity()
+            R.id.deleteActivities -> deleteSelectedActivities()
+            else -> return super.onOptionsItemSelected(item)
+        }
+
+    }
+
+    private fun addNewActivity() : Boolean {
+        //This causes issue + access database in main thread issue
+        onItemCLicked(UUID.fromString(NEW_ACTIVITY_ID))
+        return true
+    }
+
+    private fun deleteSelectedActivities(): Boolean {
+        viewModel.deleteActivities(adapter.selectedActivities)
+        //After deleting items, de-select items
+        Handler(Looper.getMainLooper()).postDelayed({
+            adapter.selectedActivities.clear()
+            requireActivity().invalidateOptionsMenu()
+        }, 100)
+        return true
     }
 
     /* MIGHT USE THIS FOR CLARITY

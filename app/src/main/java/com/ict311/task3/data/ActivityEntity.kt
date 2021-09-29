@@ -10,7 +10,7 @@ data class ActivityEntity (
     var title: String = "",
     var date: Date = Date(),
     var place: String = "",
-    var startTime: Int,
-    var endTime: Int,
+    var startTime: Int = 0,
+    var endTime: Int = 0,
     var isIndividual: Boolean = true
 )
