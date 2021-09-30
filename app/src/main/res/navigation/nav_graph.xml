@@ -21,6 +21,6 @@
         tools:layout="@layout/item_ui_fragment" >
         <argument
             android:name="activityId"
-            app:argType="java.util.UUID" />
+            app:argType="integer" />
     </fragment>
 </navigation>

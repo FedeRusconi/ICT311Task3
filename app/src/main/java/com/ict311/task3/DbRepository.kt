@@ -1,12 +1,13 @@
 package com.ict311.task3
 
-import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.data.AppDatabase
-import java.util.*
+import com.ict311.task3.helpers.DB_NAME
+import com.ict311.task3.helpers.LOG_TAG
 import java.util.concurrent.Executors
 
 class DbRepository private constructor(context: Context) {
@@ -20,25 +21,38 @@ class DbRepository private constructor(context: Context) {
     private val activityDao = database.activityDao()
     private val executor = Executors.newSingleThreadExecutor()
 
-    fun getAllActivities(): LiveData<List<ActivityEntity>>? = activityDao?.getAllActivities()
+    fun getAllActivities(): LiveData<List<ActivityEntity>> = activityDao.getAllActivities()
 
-    fun getActivityById(id: UUID): ActivityEntity? = activityDao?.getActivityById(id)
+    fun getActivityById(id: Int): LiveData<ActivityEntity?> = activityDao.getActivityById(id)
 
-    fun updateActivity(activity: ActivityEntity) {
+    fun insertActivity(activity: ActivityEntity) {
+        Log.i(LOG_TAG, activity.title)
         executor.execute {
-            activityDao?.updateActivity(activity)
+            try {
+                activityDao.insertActivity(activity)
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, e.toString())
+            }
         }
     }
 
-    fun insertActivity(activity: ActivityEntity) {
+    fun updateActivity(activity: ActivityEntity) {
         executor.execute {
-            activityDao?.insertActivity(activity)
+            try {
+                activityDao.updateActivity(activity)
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, e.toString())
+            }
         }
     }
 
     fun deleteActivities(selectedActivities: List<ActivityEntity>) {
         executor.execute {
-            activityDao?.deleteActivities(selectedActivities)
+            try {
+                activityDao.deleteActivities(selectedActivities)
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, e.toString())
+            }
         }
     }
 

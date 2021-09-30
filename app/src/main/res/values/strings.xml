@@ -6,4 +6,5 @@
     <string name="delete_activity">Delete Activity</string>
     <string name="delete_activities">Delete Activities</string>
     <string name="error_title_empty">Title cannot be empty</string>
+    <string name="error_general">Something Went Wrong</string>
 </resources>

@@ -6,13 +6,12 @@ import android.os.Looper
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListUiFragmentBinding
+import com.ict311.task3.helpers.NEW_ACTIVITY_ID
 import java.util.*
 
 class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
@@ -24,7 +23,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         binding = ListUiFragmentBinding.inflate(inflater, container, false)
@@ -39,7 +38,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
             addItemDecoration(divider)
         }
 
-        viewModel.activitiesList?.observe(viewLifecycleOwner, Observer {
+        viewModel.activitiesList.observe(viewLifecycleOwner, {
             adapter = ListUIAdapter(it, this@ListUIFragment)
             binding.recyclerView.adapter = adapter
             binding.recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -53,7 +52,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         setHasOptionsMenu(true)
     }
 
-    override fun onItemCLicked(activityId: UUID) {
+    override fun onItemCLicked(activityId: Int) {
         val action = ListUIFragmentDirections.actionItemUi(activityId)
         findNavController().navigate(action)
     }
@@ -85,7 +84,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
 
     private fun addNewActivity() : Boolean {
         //This causes issue + access database in main thread issue
-        onItemCLicked(UUID.fromString(NEW_ACTIVITY_ID))
+        onItemCLicked(NEW_ACTIVITY_ID)
         return true
     }
 

@@ -2,11 +2,13 @@ package com.ict311.task3.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ict311.task3.helpers.NEW_ACTIVITY_ID
 import java.util.*
 
 @Entity(tableName = "activity")
 data class ActivityEntity (
-    @PrimaryKey val id: UUID = UUID.randomUUID(),
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = NEW_ACTIVITY_ID,
     var title: String = "",
     var date: Date = Date(),
     var place: String = "",

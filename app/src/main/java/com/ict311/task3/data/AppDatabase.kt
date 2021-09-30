@@ -10,6 +10,6 @@ import androidx.room.TypeConverters
 @TypeConverters(ActivityTypeConverters::class)
 abstract class AppDatabase: RoomDatabase() {
 
-    abstract fun activityDao(): ActivityDao?
+    abstract fun activityDao(): ActivityDao
 
 }

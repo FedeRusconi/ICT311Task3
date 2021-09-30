@@ -2,7 +2,6 @@ package com.ict311.task3.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import java.util.*
 
 @Dao
 interface ActivityDao {
@@ -20,7 +19,7 @@ interface ActivityDao {
     fun getAllActivities(): LiveData<List<ActivityEntity>>
 
     @Query("SELECT * FROM activity WHERE id = :id")
-    fun getActivityById(id: UUID): ActivityEntity?
+    fun getActivityById(id: Int): LiveData<ActivityEntity?>
 
     @Query("SELECT COUNT(*) FROM activity")
     fun getCount(): Int

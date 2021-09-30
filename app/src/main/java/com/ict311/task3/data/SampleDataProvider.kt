@@ -1,5 +1,6 @@
 package com.ict311.task3.data
 
+import com.ict311.task3.helpers.NEW_ACTIVITY_ID
 import java.util.*
 
 class SampleDataProvider {
@@ -21,15 +22,15 @@ class SampleDataProvider {
 
         fun getActivities() = arrayListOf(
             ActivityEntity(
-                UUID.randomUUID(), sampleText1, getDate(0), "place 1",
+                NEW_ACTIVITY_ID, sampleText1, getDate(0), "place 1",
                 1, 5, true
             ),
             ActivityEntity(
-                UUID.randomUUID(), sampleText2, getDate(1), "place 2",
+                NEW_ACTIVITY_ID, sampleText2, getDate(1), "place 2",
                 2, 5, true
             ),
             ActivityEntity(
-                UUID.randomUUID(), sampleText3, getDate(2), "place 3",
+                NEW_ACTIVITY_ID, sampleText3, getDate(2), "place 3",
                 3, 5, true
             )
         )
