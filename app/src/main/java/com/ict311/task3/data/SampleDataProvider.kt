@@ -1,6 +1,6 @@
 package com.ict311.task3.data
 
-import com.ict311.task3.helpers.NEW_ACTIVITY_ID
+import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import java.util.*
 
 class SampleDataProvider {

@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListUiFragmentBinding
-import com.ict311.task3.helpers.NEW_ACTIVITY_ID
+import com.ict311.task3.utils.NEW_ACTIVITY_ID
+import com.ict311.task3.utils.SELECTED_ACTIVITIES_KEY
 import java.util.*
 
 class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
@@ -20,48 +22,54 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
     private lateinit var binding: ListUiFragmentBinding
     private lateinit var adapter: ListUIAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-        binding = ListUiFragmentBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(ListUIViewModel::class.java)
-
-        //Add a divider between list items
-        with(binding.recyclerView) {
-            setHasFixedSize(true)
-            val divider = DividerItemDecoration(
-                context, LinearLayoutManager(context).orientation
-            )
-            addItemDecoration(divider)
-        }
-
-        viewModel.activitiesList.observe(viewLifecycleOwner, {
-            adapter = ListUIAdapter(it, this@ListUIFragment)
-            binding.recyclerView.adapter = adapter
-            binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-        })
-
-        return binding.root
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        //Hide home button (needed only in ItemUI)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        //Reset bar title
+        requireActivity().title = getString(R.string.app_name)
+
+        //Bind view elements
+        binding = ListUiFragmentBinding.inflate(inflater, container, false)
+        //Add a divider between list items
+        addListItemDivider()
+
+        //Register viewModel
+        viewModel = ViewModelProvider(this).get(ListUIViewModel::class.java)
+
+        //Observe list
+        observeList(savedInstanceState)
+
+        return binding.root
+    }
+
+    /**
+     * Navigate to itemUI and pass selected activity id
+     * @param activityId The selected activity unique ID
+     */
     override fun onItemCLicked(activityId: Int) {
         val action = ListUIFragmentDirections.actionItemUi(activityId)
         findNavController().navigate(action)
     }
 
+    /**
+     * Reset options menu to toggle between two menus
+     */
     override fun onItemSelectionChanged() {
-        //Reset options menu to toggle between two menus
         requireActivity().invalidateOptionsMenu()
     }
 
+    /**
+     * Define and inflate which top menu to show
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val menuId =
             if (this::adapter.isInitialized && adapter.selectedActivities.isNotEmpty()) {
@@ -73,6 +81,9 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * Handle top menu items clicks
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.newActivity -> addNewActivity()
@@ -82,12 +93,48 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
 
     }
 
-    private fun addNewActivity() : Boolean {
-        //This causes issue + access database in main thread issue
+    /**
+     * Save list of selected activity
+     * to persist on configuration changes
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (this::adapter.isInitialized) {
+            outState.putParcelableArrayList(
+                SELECTED_ACTIVITIES_KEY,
+                adapter.selectedActivities
+            )
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    /**
+     * Retrieve and observe the list of activities
+     */
+    private fun observeList(savedInstanceState: Bundle?) {
+        viewModel.activitiesList.observe(viewLifecycleOwner, {
+            adapter = ListUIAdapter(it, this@ListUIFragment)
+            binding.recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+            val selectedActivities =
+                savedInstanceState?.getParcelableArrayList<ActivityEntity>(
+                    SELECTED_ACTIVITIES_KEY
+                )
+            adapter.selectedActivities.addAll(selectedActivities ?: emptyList())
+        })
+    }
+
+    /**
+     * Add new activity by passing pre-set ID
+     */
+    private fun addNewActivity(): Boolean {
         onItemCLicked(NEW_ACTIVITY_ID)
         return true
     }
 
+    /**
+     * Delete all selected activities
+     * and clear selectedActivities list
+     */
     private fun deleteSelectedActivities(): Boolean {
         viewModel.deleteActivities(adapter.selectedActivities)
         //After deleting items, de-select items
@@ -98,11 +145,17 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         return true
     }
 
-    /* MIGHT USE THIS FOR CLARITY
-    private fun updateUI(activities: List<ActivityEntity>) {
-        adapter = ListUIAdapter(activities)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-    }*/
+    /**
+     * Add a divider between list items
+     */
+    private fun addListItemDivider() {
+        with(binding.recyclerView) {
+            setHasFixedSize(true)
+            val divider = DividerItemDecoration(
+                context, LinearLayoutManager(context).orientation
+            )
+            addItemDecoration(divider)
+        }
+    }
 
 }

@@ -30,5 +30,8 @@ interface ActivityDao {
     @Delete
     fun deleteActivities(selectedActivities: List<ActivityEntity>): Int
 
+    @Delete
+    fun deleteActivityById(selectedActivity: ActivityEntity)
+
 
 }

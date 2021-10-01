@@ -1,10 +1,15 @@
 <resources>
-    <string name="app_name">ActivityTracker</string>
-    <string name="enter_activity_title">Enter Activity Title</string>
-    <string name="enter_activity_place">Enter Activity Place</string>
-    <string name="new_activity">New Activity</string>
-    <string name="delete_activity">Delete Activity</string>
+    <string name="app_name">Activity Tracker</string>
+    <string name="activity_deleted">Activity Deleted</string>
+    <string name="activity_saved">Activity Saved</string>
+    <string name="confirm">Confirm</string>
     <string name="delete_activities">Delete Activities</string>
-    <string name="error_title_empty">Title cannot be empty</string>
+    <string name="delete_activity">Delete Activity</string>
+    <string name="delete_activity_question">Delete Activity?</string>
+    <string name="edit_activity">Edit Activity</string>
+    <string name="enter_activity_place">Enter Activity Place</string>
+    <string name="enter_activity_title">Enter Activity Title</string>
     <string name="error_general">Something Went Wrong</string>
+    <string name="error_title_empty">Title cannot be empty</string>
+    <string name="new_activity">New Activity</string>
 </resources>

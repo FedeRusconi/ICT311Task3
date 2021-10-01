@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.data.AppDatabase
-import com.ict311.task3.helpers.DB_NAME
-import com.ict311.task3.helpers.LOG_TAG
+import com.ict311.task3.utils.DB_NAME
+import com.ict311.task3.utils.LOG_TAG
 import java.util.concurrent.Executors
 
 class DbRepository private constructor(context: Context) {
@@ -26,7 +26,6 @@ class DbRepository private constructor(context: Context) {
     fun getActivityById(id: Int): LiveData<ActivityEntity?> = activityDao.getActivityById(id)
 
     fun insertActivity(activity: ActivityEntity) {
-        Log.i(LOG_TAG, activity.title)
         executor.execute {
             try {
                 activityDao.insertActivity(activity)
@@ -50,6 +49,16 @@ class DbRepository private constructor(context: Context) {
         executor.execute {
             try {
                 activityDao.deleteActivities(selectedActivities)
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, e.toString())
+            }
+        }
+    }
+
+    fun deleteActivityById(selectedActivity: ActivityEntity) {
+        executor.execute {
+            try {
+                activityDao.deleteActivityById(selectedActivity)
             } catch (e: Exception) {
                 Log.e(LOG_TAG, e.toString())
             }
