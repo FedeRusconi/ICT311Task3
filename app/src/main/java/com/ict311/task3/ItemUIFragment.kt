@@ -59,6 +59,7 @@ class ItemUIFragment : Fragment() {
 
     /**
      *  Add Text Watchers to input texts
+     *  Add listener to dialog buttons
      */
     override fun onStart() {
         super.onStart()
@@ -68,6 +69,13 @@ class ItemUIFragment : Fragment() {
         binding.activityPlace.addTextChangedListener(
             TextWatcher(binding.activityPlace)
         )
+        binding.activityDate.setOnClickListener {
+            /*DatePickerFragment.newInstance(selectedActivity.date).apply {
+                show(this@ItemUIFragment.requireFragmentManager(), DIALOG_DATE_KEY)
+            }*/
+            val action = ItemUIFragmentDirections.actionDatePicker(selectedActivity.date.time)
+            findNavController().navigate(action)
+        }
     }
 
     /**
