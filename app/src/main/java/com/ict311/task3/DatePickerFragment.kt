@@ -3,29 +3,27 @@ package com.ict311.task3
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.ict311.task3.utils.DIALOG_DATE_KEY
+import com.ict311.task3.utils.Helpers
+import com.ict311.task3.utils.LOG_TAG
 import java.util.*
-
-private const val ARG_DATE = "date"
 
 class DatePickerFragment : DialogFragment() {
 
     private val args: DatePickerFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dateListener = DatePickerDialog.OnDateSetListener {
-                _: DatePicker, year: Int, month: Int, day: Int ->
-            val resultDate: Date = GregorianCalendar(year, month, day).time
+        val dateListener =
+            DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
+                val resultDate: Date = GregorianCalendar(year, month, day).time
 
-            /*val result = Bundle().apply {
-                putSerializable(RESULT_DATE_KEY, resultDate)
-            }*/
-
-            //val resultRequestCode = requireArguments().getString(ARG_REQUEST_CODE, "")
-            //setFragmentResult(resultRequestCode, result)
-        }
+                Helpers.setNavigationResult(findNavController(), DIALOG_DATE_KEY, resultDate)
+            }
         val date = Date(args.activityDate)
         val calendar = Calendar.getInstance()
         calendar.time = date
@@ -41,16 +39,5 @@ class DatePickerFragment : DialogFragment() {
             initialDay
         )
     }
-
-    /*companion object {
-        fun newInstance(date: Date): DatePickerFragment {
-            val args = Bundle().apply {
-                putSerializable(ARG_DATE, date)
-            }
-            return DatePickerFragment().apply {
-                arguments = args
-            }
-        }
-    }*/
 
 }

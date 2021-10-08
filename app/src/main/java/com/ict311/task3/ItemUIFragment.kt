@@ -1,19 +1,24 @@
 package com.ict311.task3
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
+import android.text.format.DateFormat
 import android.view.*
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat.jumpDrawablesToCurrentState
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ItemUiFragmentBinding
 import com.ict311.task3.utils.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ItemUIFragment : Fragment() {
 
@@ -63,18 +68,35 @@ class ItemUIFragment : Fragment() {
      */
     override fun onStart() {
         super.onStart()
+        //Title
         binding.activityTitle.addTextChangedListener(
             TextWatcher(binding.activityTitle)
         )
+        //Place
         binding.activityPlace.addTextChangedListener(
             TextWatcher(binding.activityPlace)
         )
+        //Date
+        binding.activityDate.addTextChangedListener(
+            TextWatcher(binding.activityDate)
+        )
         binding.activityDate.setOnClickListener {
-            /*DatePickerFragment.newInstance(selectedActivity.date).apply {
-                show(this@ItemUIFragment.requireFragmentManager(), DIALOG_DATE_KEY)
-            }*/
             val action = ItemUIFragmentDirections.actionDatePicker(selectedActivity.date.time)
-            findNavController().navigate(action)
+            val navController = findNavController()
+            navController.navigate(action)
+            //Observe selected date sent back from DatePickerFragment
+            Helpers.getNavigationResult(
+                navController,
+                R.id.itemUIFragment,
+                DIALOG_DATE_KEY
+            ) { date: Date ->
+                selectedActivity.date = date
+                binding.activityDate.text = DateFormat.format(DATE_PRETTY, date)
+            }
+        }
+        //Group or Individual
+        binding.groupActivity.setOnCheckedChangeListener { _, isChecked ->
+            selectedActivity.isGroup = isChecked
         }
     }
 
@@ -98,9 +120,10 @@ class ItemUIFragment : Fragment() {
                     getString(R.string.delete_activity_question),
                     Snackbar.LENGTH_LONG
                 ).setAction(
-                    getString(R.string.confirm),
-                    View.OnClickListener { deleteActivity() }
-                ).show()
+                    getString(R.string.confirm)
+                ) {
+                    deleteActivity()
+                }.show()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -112,7 +135,8 @@ class ItemUIFragment : Fragment() {
      * to maintain state on configuration changes
      */
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(ACT_TITLE_KEY, binding.activityTitle.text.toString())
+        outState.putString(ACT_TITLE_KEY, selectedActivity.title)
+        outState.putLong(ACT_DATE_KEY, selectedActivity.date.time)
         outState.putInt(ACT_TITLE_CURSOR_POS, binding.activityTitle.selectionStart)
         super.onSaveInstanceState(outState)
     }
@@ -126,14 +150,31 @@ class ItemUIFragment : Fragment() {
             { activity ->
                 activity?.let {
                     selectedActivity = activity
+                    //Title
                     val savedTitle = savedInstanceState?.getString(ACT_TITLE_KEY)
                     val savedTitleCursorPos = savedInstanceState?.getInt(ACT_TITLE_CURSOR_POS) ?: 0
                     binding.activityTitle.setText(savedTitle ?: it.title)
                     binding.activityTitle.setSelection(savedTitleCursorPos)
+                    //Date
+                    val savedDate = savedInstanceState?.getLong(ACT_DATE_KEY)
+                    binding.activityDate.text =
+                        if (savedDate !== null) {
+                            DateFormat.format(DATE_PRETTY, savedDate)
+                        } else {
+                            DateFormat.format(DATE_PRETTY, it.date)
+                        }
+
+                    //Place
                     val savedPlace = savedInstanceState?.getString(ACT_PLACE_KEY)
                     val savedPlaceCursorPos = savedInstanceState?.getInt(ACT_PLACE_CURSOR_POS) ?: 0
                     binding.activityPlace.setText(savedPlace ?: it.place)
                     binding.activityPlace.setSelection(savedPlaceCursorPos)
+                    //Group or individual
+                    binding.groupActivity.apply {
+                        isChecked = it.isGroup
+                        jumpDrawablesToCurrentState()
+                    }
+
                 }
             }
         )
@@ -181,7 +222,7 @@ class ItemUIFragment : Fragment() {
     /**
      * Delete selected activity
      */
-    private fun deleteActivity(): Boolean {
+    private fun deleteActivity() {
         viewModel.deleteActivityById(selectedActivity)
         Helpers.hideSoftKeyboard(requireActivity(), binding)
         Toast.makeText(
@@ -191,7 +232,6 @@ class ItemUIFragment : Fragment() {
         ).show()
         //Back to previous view
         findNavController().navigateUp()
-        return true
     }
 
     /**
@@ -226,6 +266,13 @@ class ItemUIFragment : Fragment() {
                 }
                 R.id.activityPlace -> {
                     selectedActivity.place = sequence.toString()
+                }
+                R.id.activityDate -> {
+                    val date =
+                        SimpleDateFormat(DATE_PRETTY, Locale.ENGLISH).parse(sequence.toString())
+                    date?.let {
+                        selectedActivity.date = it
+                    }
                 }
             }
         }

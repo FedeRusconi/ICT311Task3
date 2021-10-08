@@ -13,7 +13,7 @@
         android:layout_margin="16dp"
         android:hint="@string/enter_activity_title"
         android:inputType="textCapSentences|textMultiLine"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         tools:ignore="Autofill"
         tools:text="Activity Title" />
 
@@ -21,6 +21,7 @@
         android:id="@+id/activityDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/enter_activity_date"
         tools:text="Activity Date" />
 
     <EditText
@@ -30,8 +31,43 @@
         android:layout_margin="16dp"
         android:hint="@string/enter_activity_place"
         android:inputType="textCapSentences|textMultiLine"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:ignore="Autofill"
         tools:text="Activity Place" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/startTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/start_time"
+            tools:text="Start Time" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/endTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/end_time"
+            tools:text="End Time" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/groupActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:text="@string/group_activity" />
 
 </LinearLayout>

@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListUiFragmentBinding
+import com.ict311.task3.utils.DB_NAME
 import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import com.ict311.task3.utils.SELECTED_ACTIVITIES_KEY
 import java.util.*
@@ -31,7 +33,6 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         //Hide home button (needed only in ItemUI)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         //Reset bar title
@@ -87,7 +88,18 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.newActivity -> addNewActivity()
-            R.id.deleteActivities -> deleteSelectedActivities()
+            R.id.deleteActivities -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.delete_activity_question),
+                    Snackbar.LENGTH_LONG
+                ).setAction(
+                    getString(R.string.confirm)
+                ) {
+                    deleteSelectedActivities()
+                }.show()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
 
@@ -135,14 +147,13 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
      * Delete all selected activities
      * and clear selectedActivities list
      */
-    private fun deleteSelectedActivities(): Boolean {
+    private fun deleteSelectedActivities() {
         viewModel.deleteActivities(adapter.selectedActivities)
         //After deleting items, de-select items
         Handler(Looper.getMainLooper()).postDelayed({
             adapter.selectedActivities.clear()
             requireActivity().invalidateOptionsMenu()
         }, 100)
-        return true
     }
 
     /**

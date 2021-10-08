@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListItemBinding
+import com.ict311.task3.utils.DATE_PRETTY
 
 class ListUIAdapter(private val activitiesList: List<ActivityEntity>,
                     private val callbacks: Callbacks):
@@ -27,7 +28,7 @@ class ListUIAdapter(private val activitiesList: List<ActivityEntity>,
         fun bind(activity: ActivityEntity) {
             this.activity = activity
             binding.activityTitle.text = activity.title
-            binding.activityDate.text = DateFormat.format( "EEEE, MMM d, yyyy", activity.date)
+            binding.activityDate.text = DateFormat.format( DATE_PRETTY, activity.date)
             binding.activityPlace.text = activity.place
             //Select/De-select activity
             binding.floatingActionButton.setOnClickListener{

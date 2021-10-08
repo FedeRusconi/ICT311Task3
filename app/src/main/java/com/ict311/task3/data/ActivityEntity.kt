@@ -17,5 +17,5 @@ data class ActivityEntity (
     var place: String = "",
     var startTime: Int = 0,
     var endTime: Int = 0,
-    var isIndividual: Boolean = true
+    var isGroup: Boolean = false
 ): Parcelable
