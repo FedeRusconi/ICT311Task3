@@ -65,7 +65,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     /**
      *  Add Text Watchers to input texts
-     *  Add listener to dialog buttons
+     *  Add listeners to UI widgets
      */
     override fun onStart() {
         super.onStart()
@@ -85,17 +85,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
             dateClicked()
         }
         //Group or Individual
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            requireActivity(),
-            R.array.activity_types,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            binding.activityType.adapter = adapter
-        }
+        createArrayAdapter()
         binding.activityType.onItemSelectedListener = this
         //Start Time - Text watcher is needed on configuration changes
         binding.startTime.addTextChangedListener(
@@ -110,6 +100,22 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
         )
         binding.endTime.setOnClickListener {
             timeClicked(selectedActivity.endTime.toFloat(), "end", DIALOG_TIME_END_KEY)
+        }
+    }
+
+    /**
+     * Create an array adapter to be used in the spinner widget
+     */
+    private fun createArrayAdapter() {
+        ArrayAdapter.createFromResource(
+            requireActivity(),
+            R.array.activity_types,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            binding.activityType.adapter = adapter
         }
     }
 
@@ -141,7 +147,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
      * @param startOrEnd Pass "start" for startTime or "end" for endTime
      * @param dialogKey The name of the key to listen to (from constants.kt)
      */
-    private fun timeClicked(defaultTime:Float, startOrEnd: String, dialogKey: String) {
+    private fun timeClicked(defaultTime: Float, startOrEnd: String, dialogKey: String) {
         val action = ItemUIFragmentDirections.actionTimePicker(defaultTime, startOrEnd)
         val navController = findNavController()
         navController.navigate(action)
@@ -151,7 +157,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
             R.id.itemUIFragment,
             dialogKey
         ) { time: Double ->
-            when(startOrEnd) {
+            when (startOrEnd) {
                 "start" -> {
                     selectedActivity.startTime = time
                     //Display to two decimal places
@@ -198,7 +204,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     /**
-     * Save input texts and cursor position
+     * Save activity information
      * to maintain state on configuration changes
      */
     override fun onSaveInstanceState(outState: Bundle) {
@@ -215,7 +221,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
      * When user selects activity type from spinner
      */
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-        selectedActivity.isGroup = when(parent.getItemAtPosition(pos)) {
+        selectedActivity.isGroup = when (parent.getItemAtPosition(pos)) {
             "Group" -> true
             else -> false
         }
@@ -263,7 +269,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     //Group or individual
                     val savedIsGroup = savedInstanceState?.getBoolean(ACT_TYPE_KEY) ?: it.isGroup
                     //If null or false, set spinner to individual
-                    if(!savedIsGroup) {
+                    if (!savedIsGroup) {
                         binding.activityType.setSelection(1)
                     }
                     //Start Time
@@ -272,6 +278,10 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     //End Time
                     val savedEnd = savedInstanceState?.getDouble(ACT_END_KEY) ?: it.endTime
                     binding.endTime.text = String.format("%.2f", savedEnd)
+                    //Set clone in viewModel to detect changes
+                    if (viewModel.activityChangeDetect == null) {
+                        viewModel.activityChangeDetect = selectedActivity.clone()
+                    }
                 }
             }
         )
@@ -298,21 +308,30 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
      */
     private fun saveActivity(): Boolean {
         Helpers.hideSoftKeyboard(requireActivity(), binding)
-        if (viewModel.saveUpdateActivity(selectedActivity)) {
-            Toast.makeText(
-                context,
-                R.string.activity_saved,
-                Toast.LENGTH_SHORT
-            ).show()
-            //Back to previous view
-            findNavController().navigateUp()
-        } else {
-            Toast.makeText(
-                context,
-                R.string.error_title_empty,
-                Toast.LENGTH_SHORT
-            ).show()
+        when (viewModel.saveUpdateActivity(selectedActivity)) {
+            1 -> {
+                //Display a message only if the activity has been modified
+                if (selectedActivity.compareTo(viewModel.activityChangeDetect) != 0) {
+                    Toast.makeText(
+                        context,
+                        R.string.activity_saved,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            -1 -> {
+                Toast.makeText(
+                    context,
+                    getString(R.string.some_fields_missing),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return true
+            }
         }
+        //Back to previous view
+        findNavController().navigateUp()
+        //Reset activity change detector
+        viewModel.activityChangeDetect = null
         return true
     }
 
@@ -327,6 +346,8 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
             R.string.activity_deleted,
             Toast.LENGTH_SHORT
         ).show()
+        //Reset activity change detector
+        viewModel.activityChangeDetect = null
         //Back to previous view
         findNavController().navigateUp()
     }

@@ -6,13 +6,11 @@
     <string name="delete_activities">Delete Activities</string>
     <string name="delete_activity">Delete Activity</string>
     <string name="delete_activity_question">Delete Activity?</string>
+    <string name="delete_activities_question">Delete Activities?</string>
     <string name="edit_activity">Edit Activity</string>
     <string name="enter_activity_place">Enter Activity Place</string>
     <string name="enter_activity_title">Enter Activity Title</string>
-    <string name="error_general">Something Went Wrong</string>
-    <string name="error_title_empty">Title cannot be empty</string>
     <string name="new_activity">New Activity</string>
-    <string name="group_activity">Group Activity</string>
     <string name="enter_activity_date">Enter Activity Date</string>
     <string name="start_time">Start Time</string>
     <string name="end_time">End Time</string>
@@ -21,6 +19,10 @@
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="place">Place</string>
+    <string name="activities_not_found">Activities not found</string>
+    <string name="welcome">Welcome!</string>
+    <string name="some_fields_missing">Some fields are missing</string>
+    <string name="icon">Icon</string>
     <string-array name="activity_types">
         <item>Group</item>
         <item>Individual</item>

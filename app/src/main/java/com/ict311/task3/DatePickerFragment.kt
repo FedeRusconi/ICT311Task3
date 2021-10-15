@@ -3,14 +3,12 @@ package com.ict311.task3
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ict311.task3.utils.DIALOG_DATE_KEY
 import com.ict311.task3.utils.Helpers
-import com.ict311.task3.utils.LOG_TAG
 import java.util.*
 
 class DatePickerFragment : DialogFragment() {

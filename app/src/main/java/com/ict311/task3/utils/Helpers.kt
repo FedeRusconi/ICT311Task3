@@ -1,21 +1,30 @@
 package com.ict311.task3.utils
 
 import android.app.Activity
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import java.util.*
 
 class Helpers {
 
     companion object {
+        /**
+         * Check if ID is the one set for new activities
+         * @param id The activity
+         * @return True if it's new activity
+         */
+        fun isNewActivity(id: Int): Boolean {
+            return id == NEW_ACTIVITY_ID
+        }
+
+        /**
+         * Hide the device soft keyboard
+         * @param activity The current activity
+         * @param binding The object which contains view references
+         */
         fun hideSoftKeyboard(activity: Activity, binding: ViewBinding) {
             //Hide soft keyboard
             val imm = activity
@@ -23,14 +32,27 @@ class Helpers {
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
 
-        fun <T>setNavigationResult(navController: NavController, key: String, value: T) {
+        /**
+         * Set result of navigation action
+         * @param navController Navigation Controller
+         * @param key The key to set
+         * @param value The value to pair
+         */
+        fun <T> setNavigationResult(navController: NavController, key: String, value: T) {
             navController.previousBackStackEntry?.savedStateHandle?.set(
                 key,
                 value
             )
         }
 
-        fun <T>getNavigationResult(
+        /**
+         * Retrieve result of navigation action
+         * @param navController Navigation Controller
+         * @param id The resource ID reference
+         * @param key The key to retrieve
+         * @param onResult Callback method that is triggered once the result is retrieved
+         */
+        fun <T> getNavigationResult(
             navController: NavController,
             @IdRes id: Int,
             key: String,

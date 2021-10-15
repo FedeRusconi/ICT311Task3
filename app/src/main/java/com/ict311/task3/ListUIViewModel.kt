@@ -1,9 +1,7 @@
 package com.ict311.task3
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ict311.task3.data.ActivityEntity
-import com.ict311.task3.data.SampleDataProvider
 
 class ListUIViewModel : ViewModel() {
 
@@ -11,10 +9,10 @@ class ListUIViewModel : ViewModel() {
 
     val activitiesList = dbRepository.getAllActivities()
 
-    fun addActivity(activity: ActivityEntity) {
-        dbRepository.insertActivity(activity)
-    }
-
+    /**
+     * Delete selected activities
+     * @param selectedActivities The list of activities to delete
+     */
     fun deleteActivities(selectedActivities: List<ActivityEntity>) {
         dbRepository.deleteActivities(selectedActivities)
     }

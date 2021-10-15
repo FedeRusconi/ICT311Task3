@@ -6,8 +6,8 @@ import java.util.*
 class SampleDataProvider {
 
     companion object {
-        private val sampleText1 = "A simple activity"
-        private val sampleText2 = "An activity \n with two lines"
+        private const val sampleText1 = "A simple activity"
+        private const val sampleText2 = "An activity \n with two lines"
         private val sampleText3 = """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse convallis lacinia justo, eu varius quam cursus vitae. Aenean et turpis et mi sagittis volutpat vitae nec dolor. Aliquam sed finibus eros, vel pretium mauris. Ut at enim at ipsum cursus aliquam. Etiam vitae velit a purus suscipit congue ac gravida nulla. Suspendisse potenti. In hac habitasse platea dictumst. Vivamus vehicula risus nec mi lobortis, in euismod ligula consectetur. Quisque varius turpis in dolor molestie bibendum. Etiam interdum ex non sapien sagittis mollis. Etiam sem tellus, luctus at purus at, eleifend luctus mi. Nunc vel ipsum et tortor imperdiet feugiat at quis sem. Aliquam a mi id elit convallis tempus. Morbi id dui vel dolor posuere bibendum eget finibus nulla.
 

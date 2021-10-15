@@ -29,7 +29,7 @@ class DatabaseTest {
         database = Room.inMemoryDatabaseBuilder(appContext, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        dao = database.activityDao()!!
+        dao = database.activityDao()
     }
 
     @Test
@@ -44,18 +44,6 @@ class DatabaseTest {
         dao.insertActivity(SampleDataProvider.getSingleActivity(0))
         val count = dao.getCount()
         assertEquals(1, count)
-    }
-
-    @Test
-    fun getActivityById() {
-        val id = UUID.randomUUID()
-        val activity = ActivityEntity(
-            id,
-            "Test Activity",
-            Date()
-        )
-        dao.insertActivity(activity)
-        assertEquals(id, dao.getActivityById(id)?.id)
     }
 
     @After

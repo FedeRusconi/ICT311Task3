@@ -1,15 +1,17 @@
 package com.ict311.task3.data
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ict311.task3.utils.LOG_TAG
 import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
 @Entity(tableName = "activity")
-data class ActivityEntity (
+data class ActivityEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int = NEW_ACTIVITY_ID,
     var title: String = "",
@@ -18,4 +20,54 @@ data class ActivityEntity (
     var startTime: Double = 0.00,
     var endTime: Double = 0.00,
     var isGroup: Boolean = false
-): Parcelable
+) : Parcelable, Comparable<ActivityEntity?>, Cloneable {
+
+    /**
+     * Compare current instance with other ActivityEntity
+     * @param other The other ActivityInstance to compare to current one
+     */
+    override fun compareTo(other: ActivityEntity?): Int {
+        return if (
+            id == other?.id
+            && title == other.title
+            && date.compareTo(other.date) == 0
+            && place == other.place
+            && startTime == other.startTime
+            && endTime == other.endTime
+            && isGroup == other.isGroup
+        ) 0 else 1
+    }
+
+    /**
+     * Clone activity
+     */
+    public override fun clone(): ActivityEntity {
+        return super.clone() as ActivityEntity
+    }
+
+    /**
+     * Check if current instance is empty
+     * @return True if empty
+     */
+    fun isEmpty(): Boolean {
+        return (
+                title.isEmpty()
+                        && place.isEmpty()
+                        && startTime == 0.00
+                        && endTime == 0.00
+                )
+    }
+
+    /**
+     * Validate current instance
+     * @return True if valid
+     */
+    fun validate(): Boolean {
+        Log.i(LOG_TAG, date.toString())
+        return (
+                title.isNotEmpty()
+                        && place.isNotEmpty()
+                        && (startTime != 0.00 || endTime != 0.00)
+                )
+    }
+}

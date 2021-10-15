@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:clickable="true"
+        android:contentDescription="@string/icon"
         android:focusable="true"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 
 class DbRepository private constructor(context: Context) {
 
-    private val database : AppDatabase = Room.databaseBuilder(
+    private val database: AppDatabase = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java,
         DB_NAME
@@ -72,9 +72,9 @@ class DbRepository private constructor(context: Context) {
                 INSTANCE = DbRepository(context)
             }
         }
+
         fun get(): DbRepository {
-            return INSTANCE ?:
-            throw IllegalStateException("CrimeRepository must be initialized")
+            return INSTANCE ?: throw IllegalStateException("CrimeRepository must be initialized")
         }
     }
 

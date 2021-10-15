@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListUiFragmentBinding
-import com.ict311.task3.utils.DB_NAME
 import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import com.ict311.task3.utils.SELECTED_ACTIVITIES_KEY
 import java.util.*
@@ -91,7 +90,7 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
             R.id.deleteActivities -> {
                 Snackbar.make(
                     binding.root,
-                    getString(R.string.delete_activity_question),
+                    getString(R.string.delete_activities_question),
                     Snackbar.LENGTH_LONG
                 ).setAction(
                     getString(R.string.confirm)
@@ -132,6 +131,14 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
                     SELECTED_ACTIVITIES_KEY
                 )
             adapter.selectedActivities.addAll(selectedActivities ?: emptyList())
+            //Display recycler view only if there are items
+            if (adapter.itemCount > 0) {
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.notFoundContainer.visibility = View.GONE
+            } else {
+                binding.recyclerView.visibility = View.GONE
+                binding.notFoundContainer.visibility = View.VISIBLE
+            }
         })
     }
 
