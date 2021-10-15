@@ -23,15 +23,15 @@ class SampleDataProvider {
         fun getActivities() = arrayListOf(
             ActivityEntity(
                 NEW_ACTIVITY_ID, sampleText1, getDate(0), "place 1",
-                1, 5, true
+                8.00, 10.00, true
             ),
             ActivityEntity(
                 NEW_ACTIVITY_ID, sampleText2, getDate(1), "place 2",
-                2, 5, true
+                9.00, 16.00, true
             ),
             ActivityEntity(
                 NEW_ACTIVITY_ID, sampleText3, getDate(2), "place 3",
-                3, 5, true
+                10.00, 12.00, true
             )
         )
     }

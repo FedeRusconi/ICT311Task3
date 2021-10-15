@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_date_picker"
             app:destination="@id/datePickerFragment" />
+        <action
+            android:id="@+id/action_time_picker"
+            app:destination="@id/timePickerFragment" />
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"
@@ -32,5 +35,16 @@
         android:label="DatePickerFragment" >
         <argument android:name="activityDate"
             app:argType="long" />
+    </dialog>
+    <dialog
+        android:id="@+id/timePickerFragment"
+        android:name="com.ict311.task3.TimePickerFragment"
+        android:label="TimePickerFragment" >
+        <argument
+            android:name="activityTime"
+            app:argType="float" />
+        <argument
+            android:name="startOrEnd"
+            app:argType="string" />
     </dialog>
 </navigation>

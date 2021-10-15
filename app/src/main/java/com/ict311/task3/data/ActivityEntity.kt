@@ -15,7 +15,7 @@ data class ActivityEntity (
     var title: String = "",
     var date: Date = Date(),
     var place: String = "",
-    var startTime: Int = 0,
-    var endTime: Int = 0,
+    var startTime: Double = 0.00,
+    var endTime: Double = 0.00,
     var isGroup: Boolean = false
 ): Parcelable

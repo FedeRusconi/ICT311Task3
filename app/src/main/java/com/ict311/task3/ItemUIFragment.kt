@@ -3,12 +3,13 @@ package com.ict311.task3
 import android.os.Bundle
 import android.text.Editable
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.*
-import android.widget.CompoundButton
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat.jumpDrawablesToCurrentState
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -20,7 +21,7 @@ import com.ict311.task3.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ItemUIFragment : Fragment() {
+class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var viewModel: ItemUIViewModel
     private val args: ItemUIFragmentArgs by navArgs()
@@ -76,27 +77,93 @@ class ItemUIFragment : Fragment() {
         binding.activityPlace.addTextChangedListener(
             TextWatcher(binding.activityPlace)
         )
-        //Date
+        //Date - Text watcher is needed on configuration changes
         binding.activityDate.addTextChangedListener(
             TextWatcher(binding.activityDate)
         )
         binding.activityDate.setOnClickListener {
-            val action = ItemUIFragmentDirections.actionDatePicker(selectedActivity.date.time)
-            val navController = findNavController()
-            navController.navigate(action)
-            //Observe selected date sent back from DatePickerFragment
-            Helpers.getNavigationResult(
-                navController,
-                R.id.itemUIFragment,
-                DIALOG_DATE_KEY
-            ) { date: Date ->
-                selectedActivity.date = date
-                binding.activityDate.text = DateFormat.format(DATE_PRETTY, date)
-            }
+            dateClicked()
         }
         //Group or Individual
-        binding.groupActivity.setOnCheckedChangeListener { _, isChecked ->
-            selectedActivity.isGroup = isChecked
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            requireActivity(),
+            R.array.activity_types,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            binding.activityType.adapter = adapter
+        }
+        binding.activityType.onItemSelectedListener = this
+        //Start Time - Text watcher is needed on configuration changes
+        binding.startTime.addTextChangedListener(
+            TextWatcher(binding.startTime)
+        )
+        binding.startTime.setOnClickListener {
+            timeClicked(selectedActivity.startTime.toFloat(), "start", DIALOG_TIME_START_KEY)
+        }
+        //End Time - Text watcher is needed on configuration changes
+        binding.endTime.addTextChangedListener(
+            TextWatcher(binding.endTime)
+        )
+        binding.endTime.setOnClickListener {
+            timeClicked(selectedActivity.endTime.toFloat(), "end", DIALOG_TIME_END_KEY)
+        }
+    }
+
+    /**
+     * Date button has been clicked
+     * Open Date picker dialog
+     * Listen to date selected and set activity date
+     */
+    private fun dateClicked() {
+        val action = ItemUIFragmentDirections.actionDatePicker(selectedActivity.date.time)
+        val navController = findNavController()
+        navController.navigate(action)
+        //Observe selected date sent back from DatePickerFragment
+        Helpers.getNavigationResult(
+            navController,
+            R.id.itemUIFragment,
+            DIALOG_DATE_KEY
+        ) { date: Date ->
+            selectedActivity.date = date
+            binding.activityDate.text = DateFormat.format(DATE_PRETTY, date)
+        }
+    }
+
+    /**
+     * Time button has been clicked
+     * Open Time picker dialog
+     * Listen to time selected and set activity start or end time
+     * @param defaultTime The default value of the time picker
+     * @param startOrEnd Pass "start" for startTime or "end" for endTime
+     * @param dialogKey The name of the key to listen to (from constants.kt)
+     */
+    private fun timeClicked(defaultTime:Float, startOrEnd: String, dialogKey: String) {
+        val action = ItemUIFragmentDirections.actionTimePicker(defaultTime, startOrEnd)
+        val navController = findNavController()
+        navController.navigate(action)
+        //Observe selected time sent back from TimePickerFragment
+        Helpers.getNavigationResult(
+            navController,
+            R.id.itemUIFragment,
+            dialogKey
+        ) { time: Double ->
+            when(startOrEnd) {
+                "start" -> {
+                    selectedActivity.startTime = time
+                    //Display to two decimal places
+                    binding.startTime.text = String.format("%.2f", time)
+                }
+                "end" -> {
+                    selectedActivity.endTime = time
+                    //Display to two decimal places
+                    binding.endTime.text = String.format("%.2f", time)
+                }
+            }
+
         }
     }
 
@@ -138,7 +205,31 @@ class ItemUIFragment : Fragment() {
         outState.putString(ACT_TITLE_KEY, selectedActivity.title)
         outState.putLong(ACT_DATE_KEY, selectedActivity.date.time)
         outState.putInt(ACT_TITLE_CURSOR_POS, binding.activityTitle.selectionStart)
+        outState.putBoolean(ACT_TYPE_KEY, selectedActivity.isGroup)
+        outState.putDouble(ACT_START_KEY, selectedActivity.startTime)
+        outState.putDouble(ACT_END_KEY, selectedActivity.endTime)
         super.onSaveInstanceState(outState)
+    }
+
+    /**
+     * When user selects activity type from spinner
+     */
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+        selectedActivity.isGroup = when(parent.getItemAtPosition(pos)) {
+            "Group" -> true
+            else -> false
+        }
+    }
+
+    /**
+     * When user does not select activity type from spinner
+     */
+    override fun onNothingSelected(parent: AdapterView<*>) {
+        Toast.makeText(
+            context,
+            getString(R.string.please_select_type),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     /**
@@ -170,11 +261,17 @@ class ItemUIFragment : Fragment() {
                     binding.activityPlace.setText(savedPlace ?: it.place)
                     binding.activityPlace.setSelection(savedPlaceCursorPos)
                     //Group or individual
-                    binding.groupActivity.apply {
-                        isChecked = it.isGroup
-                        jumpDrawablesToCurrentState()
+                    val savedIsGroup = savedInstanceState?.getBoolean(ACT_TYPE_KEY) ?: it.isGroup
+                    //If null or false, set spinner to individual
+                    if(!savedIsGroup) {
+                        binding.activityType.setSelection(1)
                     }
-
+                    //Start Time
+                    val savedStart = savedInstanceState?.getDouble(ACT_START_KEY) ?: it.startTime
+                    binding.startTime.text = String.format("%.2f", savedStart)
+                    //End Time
+                    val savedEnd = savedInstanceState?.getDouble(ACT_END_KEY) ?: it.endTime
+                    binding.endTime.text = String.format("%.2f", savedEnd)
                 }
             }
         )
@@ -247,7 +344,7 @@ class ItemUIFragment : Fragment() {
     }
 
     /**
-     * Inner class used to define multiple text watchers
+     * Inner class used to define multiple text watchers for two-way data binding
      */
     private inner class TextWatcher(val view: View) : android.text.TextWatcher {
 
@@ -273,6 +370,12 @@ class ItemUIFragment : Fragment() {
                     date?.let {
                         selectedActivity.date = it
                     }
+                }
+                R.id.startTime -> {
+                    selectedActivity.startTime = sequence.toString().toDouble()
+                }
+                R.id.endTime -> {
+                    selectedActivity.endTime = sequence.toString().toDouble()
                 }
             }
         }
