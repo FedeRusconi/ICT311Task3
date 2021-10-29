@@ -37,7 +37,6 @@
             android:id="@+id/activityDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/enter_activity_date"
             tools:text="Activity Date" />
 
         <TextView

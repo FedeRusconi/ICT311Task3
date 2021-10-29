@@ -23,6 +23,7 @@
     <string name="welcome">Welcome!</string>
     <string name="some_fields_missing">Some fields are missing</string>
     <string name="icon">Icon</string>
+    <string name="activities_deleted">Activities Deleted</string>
     <string-array name="activity_types">
         <item>Group</item>
         <item>Individual</item>

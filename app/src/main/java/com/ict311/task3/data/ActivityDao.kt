@@ -3,6 +3,13 @@ package com.ict311.task3.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+/**
+ * This Data Access Object interface is used to map application calls
+ * to database operations
+ *
+ * @author Federico Rusconi
+ *
+ */
 @Dao
 interface ActivityDao {
 

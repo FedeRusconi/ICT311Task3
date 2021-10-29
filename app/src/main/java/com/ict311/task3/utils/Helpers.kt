@@ -8,12 +8,19 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import androidx.viewbinding.ViewBinding
 
+/**
+ * This class holds static helper functions that can be used from throughout the application
+ *
+ * @author Federico Rusconi
+ *
+ */
 class Helpers {
 
     companion object {
+
         /**
          * Check if ID is the one set for new activities
-         * @param id The activity
+         * @param id The activity unique ID
          * @return True if it's new activity
          */
         fun isNewActivity(id: Int): Boolean {
@@ -26,14 +33,13 @@ class Helpers {
          * @param binding The object which contains view references
          */
         fun hideSoftKeyboard(activity: Activity, binding: ViewBinding) {
-            //Hide soft keyboard
             val imm = activity
                 .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
 
         /**
-         * Set result of navigation action
+         * Set result of navigation action as a key-value pair
          * @param navController Navigation Controller
          * @param key The key to set
          * @param value The value to pair

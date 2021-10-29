@@ -1,5 +1,11 @@
 package com.ict311.task3.utils
 
+/**
+ * This file contains global constants that are used throughout the application
+ *
+ * @author Federico Rusconi
+ */
+
 const val DB_NAME = "activity_tracker.db"
 const val NEW_ACTIVITY_ID = 0
 const val LOG_TAG = "appDebug"

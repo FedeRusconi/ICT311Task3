@@ -21,6 +21,13 @@ import com.ict311.task3.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * This fragment controller class controls the single activity view
+ * Retrieving the activity information, letting the user create/update/delete and activity
+ *
+ * @author Federico Rusconi
+ *
+ */
 class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var viewModel: ItemUIViewModel
@@ -77,7 +84,9 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.activityPlace.addTextChangedListener(
             TextWatcher(binding.activityPlace)
         )
-        //Date - Text watcher is needed on configuration changes
+        //Date - Text watcher is needed to keep displaying selection on configuration changes
+        //Display current date by default
+        binding.activityDate.text = DateFormat.format(DATE_PRETTY, selectedActivity.date)
         binding.activityDate.addTextChangedListener(
             TextWatcher(binding.activityDate)
         )
@@ -87,14 +96,14 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
         //Group or Individual
         createArrayAdapter()
         binding.activityType.onItemSelectedListener = this
-        //Start Time - Text watcher is needed on configuration changes
+        //Start Time - Text watcher is needed to keep displaying selection on configuration changes
         binding.startTime.addTextChangedListener(
             TextWatcher(binding.startTime)
         )
         binding.startTime.setOnClickListener {
             timeClicked(selectedActivity.startTime.toFloat(), "start", DIALOG_TIME_START_KEY)
         }
-        //End Time - Text watcher is needed on configuration changes
+        //End Time - Text watcher is needed to keep displaying selection on configuration changes
         binding.endTime.addTextChangedListener(
             TextWatcher(binding.endTime)
         )
@@ -105,6 +114,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     /**
      * Create an array adapter to be used in the spinner widget
+     * (Provide the user with a list of options to select from)
      */
     private fun createArrayAdapter() {
         ArrayAdapter.createFromResource(
@@ -183,6 +193,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     /**
      * Handle top menu clicks
+     * @item The menu item that has been clicked
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -253,6 +264,7 @@ class ItemUIFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.activityTitle.setText(savedTitle ?: it.title)
                     binding.activityTitle.setSelection(savedTitleCursorPos)
                     //Date
+                    Log.i(LOG_TAG, selectedActivity.date.toString())
                     val savedDate = savedInstanceState?.getLong(ACT_DATE_KEY)
                     binding.activityDate.text =
                         if (savedDate !== null) {

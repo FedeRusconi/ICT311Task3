@@ -9,6 +9,13 @@ import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.databinding.ListItemBinding
 import com.ict311.task3.utils.DATE_PRETTY
 
+/**
+ * This class is an adapter class used to generate multiple list items
+ * for displaying a list of user's activities
+ *
+ * @author Federico Rusconi
+ *
+ */
 class ListUIAdapter(
     private val activitiesList: List<ActivityEntity>,
     private val callbacks: Callbacks

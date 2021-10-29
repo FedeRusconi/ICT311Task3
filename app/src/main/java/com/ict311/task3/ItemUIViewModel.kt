@@ -7,6 +7,15 @@ import androidx.lifecycle.ViewModel
 import com.ict311.task3.data.ActivityEntity
 import com.ict311.task3.utils.Helpers
 
+/**
+ * This view model controller class sits in the middle between the ItemUI fragment controller class
+ * and the model class (Activity Entity).
+ * It is used to avoid overloading the fragment class with both UI management functionalities
+ * and data management functionalities.
+ *
+ * @author Federico Rusconi
+ *
+ */
 class ItemUIViewModel : ViewModel() {
 
     private val dbRepository = DbRepository.get()
@@ -28,6 +37,7 @@ class ItemUIViewModel : ViewModel() {
     /**
      * Save or update selected activity
      * @param activity The selected activity
+     * @return 1 - Successful. 0 - No response. -1 - Error
      */
     fun saveUpdateActivity(activity: ActivityEntity): Int {
         val returnValue: Int

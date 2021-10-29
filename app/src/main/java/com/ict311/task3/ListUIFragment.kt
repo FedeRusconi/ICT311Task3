@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,13 @@ import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import com.ict311.task3.utils.SELECTED_ACTIVITIES_KEY
 import java.util.*
 
+/**
+ * This fragment controller class controls the activities list view
+ * Retrieving a list of activities and letting the user selecting a deleting multiple activities
+ *
+ * @author Federico Rusconi
+ *
+ */
 class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
 
     private lateinit var viewModel: ListUIViewModel
@@ -161,6 +169,11 @@ class ListUIFragment : Fragment(), ListUIAdapter.Callbacks {
             adapter.selectedActivities.clear()
             requireActivity().invalidateOptionsMenu()
         }, 100)
+        Toast.makeText(
+            context,
+            R.string.activities_deleted,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     /**

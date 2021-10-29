@@ -3,6 +3,13 @@ package com.ict311.task3.data
 import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import java.util.*
 
+/**
+ * This class is used to create and insert sample data into the database.
+ * It can be used for unit testing.
+ *
+ * @author Federico Rusconi
+ *
+ */
 class SampleDataProvider {
 
     companion object {
@@ -14,12 +21,23 @@ class SampleDataProvider {
             Quisque eget elit interdum, tincidunt tortor eu, porta mi. In porta mi magna, ac bibendum nulla maximus ut. Nullam sed augue mollis, aliquam est non, egestas sapien. Integer volutpat accumsan tellus at fermentum. Integer interdum quis mi vel cursus. Nullam venenatis massa ut pretium hendrerit. Mauris vestibulum tortor in enim iaculis suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque consequat ac urna nec tristique. Pellentesque ac arcu risus. Sed a scelerisque enim, at sollicitudin diam.
         """.trimIndent()
 
+        /**
+         * Get current timestamp and add the provided offset
+         * @param diff The amount of time (milliseconds) to add to current timestamp
+         */
         private fun getDate(diff: Long): Date {
             return Date(Date().time + diff)
         }
 
+        /**
+         * Get a single activity
+         * @param index The of the activity to retrieve, from below list.
+         */
         fun getSingleActivity(index: Int): ActivityEntity = getActivities()[index]
 
+        /**
+         * Get three sample activities
+         */
         fun getActivities() = arrayListOf(
             ActivityEntity(
                 NEW_ACTIVITY_ID, sampleText1, getDate(0), "place 1",

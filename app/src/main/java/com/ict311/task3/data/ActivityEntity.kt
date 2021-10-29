@@ -1,14 +1,20 @@
 package com.ict311.task3.data
 
 import android.os.Parcelable
-import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ict311.task3.utils.LOG_TAG
 import com.ict311.task3.utils.NEW_ACTIVITY_ID
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+/**
+ * This class represents the Activity entity that is stored in the database
+ * By using the @Entity annotation, room library uses this class to define the
+ * database's only table.
+ *
+ * @author Federico Rusconi
+ *
+ */
 @Parcelize
 @Entity(tableName = "activity")
 data class ActivityEntity(
@@ -25,6 +31,7 @@ data class ActivityEntity(
     /**
      * Compare current instance with other ActivityEntity
      * @param other The other ActivityInstance to compare to current one
+     * @return 0 if two objects are equal or 1 if they are not equal
      */
     override fun compareTo(other: ActivityEntity?): Int {
         return if (
@@ -51,11 +58,11 @@ data class ActivityEntity(
      */
     fun isEmpty(): Boolean {
         return (
-                title.isEmpty()
-                        && place.isEmpty()
-                        && startTime == 0.00
-                        && endTime == 0.00
-                )
+            title.isEmpty()
+            && place.isEmpty()
+            && startTime == 0.00
+            && endTime == 0.00
+        )
     }
 
     /**
@@ -63,11 +70,10 @@ data class ActivityEntity(
      * @return True if valid
      */
     fun validate(): Boolean {
-        Log.i(LOG_TAG, date.toString())
         return (
-                title.isNotEmpty()
-                        && place.isNotEmpty()
-                        && (startTime != 0.00 || endTime != 0.00)
-                )
+            title.isNotEmpty()
+            && place.isNotEmpty()
+            && (startTime != 0.00 || endTime != 0.00)
+        )
     }
 }
