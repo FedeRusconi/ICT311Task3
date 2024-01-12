@@ -1,5 +1,5 @@
-# ICT311Task3
+# Workout app
 
-Workout App
+A simple Android application, developed with Kotlin, to keep track of workout activities.
 
-ICT311 Assessment Task 3
+Create, View and Edit existing activities and stay healthy!
